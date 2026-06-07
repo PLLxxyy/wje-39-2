@@ -1,5 +1,5 @@
 import { Package, FilterStatus } from '../types';
-import { statusColor, statusLabel, statusBg } from '../utils/helpers';
+import { statusColor, statusLabel, statusBg, getSpeedLevel, speedLabel, speedBg } from '../utils/helpers';
 
 interface Props {
   packages: Package[];
@@ -38,34 +38,42 @@ export default function PackageList({ packages, filter, onFilterChange, onSelect
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-2">
-        {filtered.map((pkg) => (
-          <button
-            key={pkg.id}
-            onClick={() => onSelect(pkg)}
-            className={`w-full text-left p-3 rounded-lg border transition-all ${
-              selectedId === pkg.id
-                ? 'border-blue-500 bg-slate-700/80'
-                : 'border-slate-700 bg-slate-800 hover:bg-slate-700/60'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-mono text-slate-300">{pkg.trackingNo}</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded text-white ${statusBg[pkg.status]}`}>
-                {statusLabel[pkg.status]}
-              </span>
-            </div>
-            <div className="text-xs text-slate-400 mb-2">
-              {pkg.currentCity} → {pkg.destinationCity}
-            </div>
-            <div className="w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${pkg.progress}%`, backgroundColor: statusColor[pkg.status] }}
-              />
-            </div>
-            <div className="text-[10px] text-slate-500 mt-1">进度 {pkg.progress}%</div>
-          </button>
-        ))}
+        {filtered.map((pkg) => {
+          const speedLevel = getSpeedLevel(pkg);
+          return (
+            <button
+              key={pkg.id}
+              onClick={() => onSelect(pkg)}
+              className={`w-full text-left p-3 rounded-lg border transition-all ${
+                selectedId === pkg.id
+                  ? 'border-blue-500 bg-slate-700/80'
+                  : 'border-slate-700 bg-slate-800 hover:bg-slate-700/60'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-mono text-slate-300">{pkg.trackingNo}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded text-white ${statusBg[pkg.status]}`}>
+                  {statusLabel[pkg.status]}
+                </span>
+              </div>
+              <div className="text-xs text-slate-400 mb-2">
+                {pkg.currentCity} → {pkg.destinationCity}
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: `${pkg.progress}%`, backgroundColor: statusColor[pkg.status] }}
+                />
+              </div>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-[10px] text-slate-500">进度 {pkg.progress}%</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded text-white ${speedBg[speedLevel]}`}>
+                  {speedLabel[speedLevel]}
+                </span>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

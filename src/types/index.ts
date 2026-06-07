@@ -1,4 +1,5 @@
 export type PackageStatus = 'transit' | 'delivered' | 'exception';
+export type SpeedLevel = 'fast' | 'normal' | 'slow';
 
 export interface Package {
   id: string;
@@ -13,6 +14,8 @@ export interface Package {
   x: number;
   y: number;
   route: { x: number; y: number }[];
+  distance: number;
+  elapsedHours: number;
 }
 
 export type MapMode = 'normal' | 'satellite';

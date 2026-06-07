@@ -1,6 +1,6 @@
 import { Package } from '../types';
-import { statusColor, statusLabel } from '../utils/helpers';
-import { X, MapPin, User, Calendar, Package as PackageIcon } from 'lucide-react';
+import { statusColor, statusLabel, getSpeedLevel, speedLabel, speedColor, calculateSpeed } from '../utils/helpers';
+import { X, MapPin, User, Calendar, Package as PackageIcon, Gauge, Route, Clock } from 'lucide-react';
 
 interface Props {
   pkg: Package | null;
@@ -9,6 +9,9 @@ interface Props {
 
 export default function DetailCard({ pkg, onClose }: Props) {
   if (!pkg) return null;
+
+  const speedLevel = getSpeedLevel(pkg);
+  const speed = calculateSpeed(pkg);
 
   return (
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-80 bg-slate-800/95 border border-slate-600 rounded-xl shadow-2xl p-4 backdrop-blur">
@@ -36,6 +39,18 @@ export default function DetailCard({ pkg, onClose }: Props) {
           <span>当前城市：{pkg.currentCity} → {pkg.destinationCity}</span>
         </div>
         <div className="flex items-center gap-2 text-slate-300">
+          <Route className="w-3.5 h-3.5 text-slate-500" />
+          <span>总距离：{pkg.distance} 公里</span>
+        </div>
+        <div className="flex items-center gap-2 text-slate-300">
+          <Clock className="w-3.5 h-3.5 text-slate-500" />
+          <span>运输时长：{pkg.elapsedHours.toFixed(1)} 小时</span>
+        </div>
+        <div className="flex items-center gap-2 text-slate-300">
+          <Gauge className="w-3.5 h-3.5 text-slate-500" />
+          <span>平均速度：{speed.toFixed(1)} 公里/小时</span>
+        </div>
+        <div className="flex items-center gap-2 text-slate-300">
           <Calendar className="w-3.5 h-3.5 text-slate-500" />
           <span>预计送达：{pkg.estimatedDelivery}</span>
         </div>
@@ -47,6 +62,12 @@ export default function DetailCard({ pkg, onClose }: Props) {
           style={{ backgroundColor: statusColor[pkg.status] }}
         >
           {statusLabel[pkg.status]}
+        </span>
+        <span
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
+          style={{ backgroundColor: speedColor[speedLevel] }}
+        >
+          运输{speedLabel[speedLevel]}
         </span>
         <div className="flex-1 bg-slate-700 rounded-full h-1.5 overflow-hidden">
           <div
